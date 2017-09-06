@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import Comment from '../presentation/Comment'
 import style from './style'
+import { APIManager } from '../../utils'
 
 class Comments extends Component{
     constructor(){
@@ -8,10 +9,26 @@ class Comments extends Component{
         this.state = {
             comment: {
               username: '',
-              body: ''
+              body: '',
+              timestamp: ''
             },
             list: []
         }
+    }
+
+    componentDidMount(){
+        console.log('componentDidMount1');
+
+        APIManager.get('/api/comment', null, (err, res) => {
+            if(err){
+                alert('Error: '+err.message);
+                return
+            }
+
+            this.setState({
+                list: res.results
+            })
+        });
     }
 
     submitComment(){

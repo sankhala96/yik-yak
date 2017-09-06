@@ -5,7 +5,7 @@ module.exports ={
     find: function (params, callback) {
         Zone.find(params, function (err, zones) {
             if(err){
-                callback(err, null)
+                callback(err, null);
                 return
             }
 
@@ -16,7 +16,7 @@ module.exports ={
     findById: function (id, callback) {
         Zone.findById(id, function (err, zone) {
             if(err){
-                callback(err, null)
+                callback(err, null);
                 return
             }
 
@@ -25,14 +25,14 @@ module.exports ={
     },
     
     create: function (params, callback) {
-        var zips = params['zipCode'];
-        var zip = zips.split(',');
-        var newZips = [];
-        zip.forEach(function (zipCode) {
-           newZips.push(zipCode.trim())
-        });
+      //  var zips = params['zipCode'];
+       // var zip = zips.split(',');
+       // var newZips = [];
+        //zip.forEach(function (zipCode) {
+          // newZips.push(zipCode.trim())
+       // });
 
-        params['zipCode'] = newZips;
+       // params['zipCode'] = newZips;
 
         Zone.create(params, function (err, zone) {
             if(err){

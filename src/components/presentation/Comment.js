@@ -10,7 +10,7 @@ class Comment extends Component{
 
                 <span>{this.props.currentComment.body}<br /></span>
                 <span>|</span>
-                <span>{this.props.currentComment.timeStamp}</span>
+                <span>{this.props.currentComment.timestamp}</span>
                 <hr />
             </div>
         )
