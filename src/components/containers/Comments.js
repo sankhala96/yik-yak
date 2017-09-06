@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import Comment from '../presentation/Comment'
+import{CreateComment, Comment} from '../presentation'
 import style from './style'
 import { APIManager } from '../../utils'
 
@@ -7,11 +7,7 @@ class Comments extends Component{
     constructor(){
         super();
         this.state = {
-            comment: {
-              username: '',
-              body: '',
-              timestamp: ''
-            },
+
             list: []
         }
     }
@@ -31,38 +27,20 @@ class Comments extends Component{
         });
     }
 
-    submitComment(){
-        console.log('submit comment: ' + JSON.stringify(this.state.comment));
-        let updateList = Object.assign([], this.state.list);
-        updateList.push(this.state.comment);
+    submitComment(comment){
+        console.log('submit comment: ' + JSON.stringify(comment));
 
-        this.setState({
-            list: updateList
-        })
-
-    }
-
-    updateUserName(event){
-        //console.log('username change'+ event.target.value);
-
-        //copy object and update
-        let updatedComment = Object.assign({}, this.state.comment);
-        updatedComment['username'] = event.target.value;
-
-        this.setState({
-            comment: updatedComment
-        })
-    }
-
-    updateComment(event){
-        //console.log('Body update: '+ event.target.value);
-
-        //copy object and update
-        let updatedComment = Object.assign({}, this.state.comment);
-        updatedComment['body'] = event.target.value;
-
-        this.setState({
-            comment: updatedComment
+        let updatedComment = Object.assign({}, comment);
+        APIManager.post('/api/comment', updatedComment, (err, res) => {
+            if(err){
+                alert('Error: '+ err.message);
+                return
+            }
+            let updatedList = Object.assign([], this.state.list);
+            updatedList.push(res.result);
+            this.setState({
+                list: updatedList
+            })
         })
     }
 
@@ -81,10 +59,7 @@ class Comments extends Component{
                         { commentList }
                     </ul>
 
-                    <input onChange={this.updateUserName.bind(this)} className="form-control" type="text" placeholder="User Name"/><br/>
-                    <input onChange={this.updateComment.bind(this)} className="form-control" type="text" placeholder="Comment"/><br/>
-                    <button onClick={this.submitComment.bind(this)} className="btn btn-info">Submit Comment</button>
-
+                    <CreateComment onCreate={this.submitComment.bind(this)}/>
                 </div>
             </div>
         )

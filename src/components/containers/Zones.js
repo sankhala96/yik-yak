@@ -1,15 +1,12 @@
 import React, { Component } from 'react'
-import Zone from '../presentation/Zone'
+import {Zone, CreateZone} from '../presentation'
 import { APIManager } from '../../utils'
 
 class Zones extends Component{
     constructor(){
         super();
         this.state = {
-            zone: {
-                name: '',
-                zipCode: ''
-            },
+            selected: 0,
             list: []
 
         }
@@ -28,13 +25,9 @@ class Zones extends Component{
         });
     }
 
-    addZone(){
-
-        let updateZone = Object.assign({}, this.state.zone);
-        updateZone['zipCode']= updateZone.zipCode.split(',');
-        console.log('ADD Zone: ' + JSON.stringify(updateZone));
-
-        APIManager.post('/api/zone', updateZone, (err, response) => {
+    addZone(zone){
+        let updatedZone = Object.assign({}, zone);
+        APIManager.post('/api/zone', updatedZone, (err, response) => {
             if(err){
                 alert('Error: '+err.message);
                 return
@@ -50,33 +43,28 @@ class Zones extends Component{
 
     }
 
-    updateZone(event){
-        console.log('update Zone:' +event.target.id + '==' + event.target.value);
-
-        let updateZone = Object.assign({}, this.state.zone);
-        updateZone[event.target.id] = event.target.value;
-
+    selectZone(index){
+        console.log('select Zone ' + index);
         this.setState({
-            zone: updateZone
+            selected: index
         })
     }
 
     render(){
 
         const  listItem = this.state.list.map((zone,i) => {
+           let selected = (i == this.state.selected);
            return(
                <li key={i}>
-                   <Zone currentZone={zone} />
-               </li>           )
+                   <Zone index={i} select={this.selectZone.bind(this)} isSelected={selected} currentZone={zone} />
+               </li>
+           )
         });
         return(
             <div>
                 <ol>
                     {listItem}<br/>
-
-                    <input id="name" onChange={this.updateZone.bind(this)} className="form-control" type="text" placeholder="Zone Name"/><br/>
-                    <input id="zipCode" onChange={this.updateZone.bind(this)} className="form-control" type="text" placeholder="Zip Code"/><br/>
-                    <button onClick={this.addZone.bind(this)} className="btn btn-danger">Add Zone</button>
+                    <CreateZone onCreate={this.addZone.bind(this)}/>
                 </ol>
             </div>
         )
